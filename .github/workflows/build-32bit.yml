@@ -1,0 +1,79 @@
+name: Build and Release
+on: 
+  push:
+    branches:
+      - 32-bit
+
+jobs:
+  check-tag:
+    name: Check Tag and Version
+    runs-on: ubuntu-latest
+    outputs:
+      newbuild: ${{ steps.check-result.outputs.newbuild }}
+      newtag: ${{ steps.check-result.outputs.newtag }}
+    steps:
+    - name: Wait on check
+      uses: lewagon/wait-on-check-action@v1.3.1
+      with:
+        ref: ${{ github.ref }}
+        check-name: 'ESLint Check'
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        wait-interval: 30
+    - name: Checkout code
+      uses: actions/checkout@v3.1.0
+      with:
+        fetch-depth: 0
+    - name: Get latest tag
+      id: previous-tag
+      uses: WyriHaximus/github-action-get-previous-tag@v1.2.2
+    - name: Get project version
+      id: project-version
+      uses: euberdeveloper/ga-project-version@v2.1.0
+      with:
+        package-manager: npm
+    - name: Get versions
+      run: |
+        echo "oldtag_string=${{ steps.previous-tag.outputs.tag }}" >> $GITHUB_ENV
+        echo "newtag_string=${{ format('v{0}', steps.project-version.outputs.version) }}" >> $GITHUB_ENV
+    - name: Compare versions
+      run: |
+        echo "newbuild=${{ env.oldtag_string != env.newtag_string }}" >> $GITHUB_ENV
+    - name: Set check result
+      id: check-result
+      run: |
+        echo "Latest tag: ${{ env.oldtag_string }}"
+        echo "Project version (prepended with v): ${{ env.newtag_string }}"
+        echo "Generate new release: ${{ env.newbuild }}"
+        echo "newbuild=${{ env.newbuild }}" >> $GITHUB_OUTPUT
+        echo "newtag=${{ env.newtag_string }}" >> $GITHUB_OUTPUT
+
+  build-release:
+    name: Build and Release
+    runs-on: windows-latest
+    needs: check-tag
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3.1.0
+    - name: Setup Node.js
+      uses: actions/setup-node@v3.5.1
+      with:
+        node-version: '16.18'
+    - name: Setup Python
+      uses: actions/setup-python@v4.3.0
+      with:
+        python-version: '3.10'
+    - name: Install npm modules
+      run: npm ci
+    - name: Install pip modules
+      run: npm run pipsetup
+    - name: Build release artifact
+      run: npm run distpackage
+    - name: Create release
+      uses: softprops/action-gh-release@v0.1.15
+      with: 
+        token: "${{ secrets.GITHUB_TOKEN }}"
+        tag_name: ${{ needs.check-tag.outputs.newtag }}
+        prerelease: true
+        generate_release_notes: true
+        files: |
+          dist/OpenHeroSelect.7z
