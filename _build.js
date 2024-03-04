@@ -114,7 +114,7 @@ function streamToPromise(stream) {
 }
 
 async function runPkg(SourceJSFileName, iconFileName, fileDescription, author, exeOutputFileName, requireAdmin) {
-  const pkgTarget = 'latest-win-x64';
+  const pkgTarget = 'node8-win-x86';
   const cacheExe = await downloadCache(pkgTarget);
   await editNodeJSExeData(cacheExe, iconFileName, fileDescription, author, requireAdmin);
   const commands = [path.resolve("js_source", SourceJSFileName), "--public",
