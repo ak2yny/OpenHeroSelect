@@ -11,9 +11,6 @@ Please note that 32-bit versions take longer to generate, so the latest release 
 ## Usage instructions
 [Instructions](help_files/)
 
-## Requirements
-Windows 10+ 64 bit
-
 ## Developing/Building instructions
 * Requires python/pip (recommended Python version is 3.12.1) and nodejs/npm (recommended Node.JS version is 20.12.1) to be installed
   * If using a node version management tool like [fnm](https://github.com/Schniz/fnm), you can simply type `fnm use` to use the nodejs version defined in `.nvmrc`.
