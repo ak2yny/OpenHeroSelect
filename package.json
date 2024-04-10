@@ -1,6 +1,6 @@
 {
   "name": "openheroselect",
-  "version": "4.8.5",
+  "version": "4.9.1",
   "description": "Open Source HeroSelect for Marvel Ultimate Alliance (2006)",
   "main": "index.js",
   "scripts": {
@@ -9,9 +9,13 @@
     "clean": "npm i && npm run envsetup && node ./_build.js -c",
     "fullclean": "npm i && npm run envsetup && node ./_build.js -f",
     "build": "npm run envsetup && node ./_build.js",
+    "build32": "npm run envsetup && node ./_build.js --compat32",
     "distpackage": "npm run fullclean && npm run build && node ./_build.js -p",
+    "distpackage32": "npm run fullclean && npm run build32 && node ./_build.js -p --compat32",
     "buildohs": "npm run envsetup && node ./_build.js -t ohs",
+    "buildohs32": "npm run envsetup && node ./_build.js -t ohs --compat32",
     "buildjson2xmlb": "node ./_build.js -t json2xmlb",
+    "buildjson2xmlb32": "node ./_build.js -t json2xmlb --compat32",
     "buildcopyfiles": "node ./_build.js -t copyfiles"
   },
   "bin": {
@@ -21,26 +25,21 @@
   "author": "Tony Stark @ MarvelMods (TheRealPSV @ GitHub)",
   "dependencies": {
     "cross-spawn": "^7.0.3",
-    "dotenv": "^16.0.0",
-    "enquirer": "^2.3.6",
-    "fast-xml-parser": "^4.2.5",
-    "fs-extra": "^10.0.1",
-    "minimist": "^1.2.6",
+    "dotenv": "^16.4.5",
+    "enquirer": "^2.4.1",
+    "fast-xml-parser": "^4.3.6",
+    "fs-extra": "^11.2.0",
+    "glob": "^10.3.12",
+    "minimist": "^1.2.8",
     "source-map-support": "^0.5.21"
   },
   "devDependencies": {
-    "7zip-bin": "^5.1.1",
-    "eslint": "^8.21.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-n": "^15.2.4",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.0.0",
+    "@eslint/js": "^9.0.0",
+    "@yao-pkg/pkg": "^5.11.5",
+    "7zip-bin": "^5.2.0",
+    "eslint": "^9.0.0",
+    "globals": "^15.0.0",
     "node-7z": "^3.0.0",
-    "pkg": "^5.5.2",
-    "rcedit": "^3.0.1"
-  },
-  "volta": {
-    "node": "16.18.0"
+    "rcedit": "^4.0.1"
   }
 }
