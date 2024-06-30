@@ -30,6 +30,11 @@ Basic usage:
     Fix File Extensions:
         This converts any files with incorrect extensions you have inside the mua or xml2 folders (your json/xml stats, rosters, and menulocations) to use the proper extension so OHS can find them.
         See the "rosters, stats, menulocations" file for more information
+    
+    Alternative Way to Generate a Herostat:
+        Each game has a roster_from_herostats.bat file to generate a herostat differently. Open the "mua" or "xml2" folder to find roster_from_herostats.bat next to config.ini. A config.ini must exist. If it doesn't run OpenHeroSelect and enter the configurations using the instructions above. If a config.ini exists, you can open the herostat folder ("xml" by default) and rename the files (herostats) as follows:
+        At the beginning of the filename enter the menulocation that you want this character at. For XML2 you can enter any number you want. If the herostat is called "Juggernaut", you can rename it to "12 Juggernaut" to place Juggernaut at location "12". You can also rename it to "12 Juggernaut Alt", if you want. You can also make a copy of the herosta first. Use the stage previews for menulocaton information. Important: Any files that start with a number will be added to the roster. In MUA, filenames with identical numbers will cause problems.
+        When you're done renaming the files (herostats), go back to the "mua" or "xml2" folder and run roster_from_herostats.bat (double-click on it). Let OHS finish its job before running the game.
 
 Troubleshooting:
     If your roster isn't being updated in the game, it's possible OHS can't put the herostat files in your game's directory because of file permissions. To work around this you can try right-clicking OpenHeroSelect.exe and running it as an Administrator.
