@@ -1,6 +1,6 @@
 {
   "name": "openheroselect",
-  "version": "4.9.4",
+  "version": "4.9.5",
   "description": "Open Source HeroSelect for Marvel Ultimate Alliance (2006)",
   "main": "index.js",
   "scripts": {
@@ -11,15 +11,19 @@
     "build": "npm run envsetup && node ./_build.js -a win-x64",
     "build32": "npm run envsetup && node ./_build.js -a win-x86",
     "buildlinux": "npm run envsetup && node ./_build.js -a linux-x64",
+    "buildmac": "npm run envsetup && node ./_build.js -a macos-x64",
     "distpackage-x64": "npm run fullclean && npm run build && node ./_build.js -p",
     "distpackage-x86": "npm run fullclean && npm run build32 && node ./_build.js -p 32",
     "distpackagelinux-x64": "npm run fullclean && npm run buildlinux && node ./_build.js -p linux-64",
+    "distpackagemac-x64": "npm run fullclean && npm run buildmac && node ./_build.js -p macos-64",
     "buildohs": "npm run envsetup && node ./_build.js -t ohs -a win-x64",
     "buildohs32": "npm run envsetup && node ./_build.js -t ohs -a win-x86",
     "buildohslinux": "npm run envsetup && node ./_build.js -t ohs -a linux-x64",
+    "buildohsmac": "npm run envsetup && node ./_build.js -t ohs -a macos-x64",
     "buildjson2xmlb": "node ./_build.js -t json2xmlb -a win-x64",
     "buildjson2xmlb32": "node ./_build.js -t json2xmlb -a win-x86",
     "buildjson2xmlblinux": "node ./_build.js -t json2xmlb -a linux-x64",
+    "buildjson2xmlbmac": "node ./_build.js -t json2xmlb -a macos-x64",
     "buildcopyfiles": "node ./_build.js -t copyfiles"
   },
   "bin": {
