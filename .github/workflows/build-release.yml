@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - MacTest
 
 jobs:
   check-tag:
