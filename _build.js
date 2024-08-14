@@ -84,7 +84,7 @@ const main = async () => {
   if (!args.t || args.t.includes("json2xmlb")) {
     console.log("building json2xmlb");
     const description = "Converts between json files and xmlb/engb files.";
-    await runPyInstaller("xmlb (raven-formats by nikita488).py", MAIN_ICON_FILE_NAME, description, "nikita488 @ MarvelMods", "json2xmlb.exe", args.a.slice(0, 5) === 'linux');
+    await runPyInstaller("xmlb (raven-formats by nikita488).py", MAIN_ICON_FILE_NAME, description, "nikita488 @ MarvelMods", "json2xmlb.exe", args.a.slice(0, 3) === 'win');
   }
 
   //copyfiles
@@ -116,10 +116,10 @@ function streamToPromise(stream) {
 async function runPkg(SourceJSFileName, iconFileName, fileDescription, author, exeOutputFileName, requireAdmin, platform) {
   const pkgTarget = `latest-${platform}`;
   const cacheExe = await downloadCache(pkgTarget);
-  if (platform.slice(0, 5) === 'linux') {
-    exeOutputFileName = exeOutputFileName.slice(0, -4);
-  } else {
+  if (platform.slice(0, 3) === 'win') {
     await editNodeJSExeData(cacheExe, iconFileName, fileDescription, author, requireAdmin);
+  } else {
+    exeOutputFileName = exeOutputFileName.slice(0, -4);
   }
   const commands = [path.resolve("js_source", SourceJSFileName), "--public",
     "--targets", pkgTarget, "--compress", "Brotli",
@@ -127,21 +127,21 @@ async function runPkg(SourceJSFileName, iconFileName, fileDescription, author, e
   await pkg.exec(commands);
 }
 
-async function runPyInstaller(sourcePyFileName, iconFileName, fileDescription, author, exeOutputFileName, linux) {
+async function runPyInstaller(sourcePyFileName, iconFileName, fileDescription, author, exeOutputFileName, win) {
   fs.mkdirSync("temp", { recursive: true });
-  if (linux) {
-    exeOutputFileName = path.parse(path.resolve(exeOutputFileName)).name;
-    cspawn.sync("pyinstaller", ["--noconfirm", "--onefile",
-      "--distpath", pythonPathResolve("build"), "--specpath", "temp", "--workpath", "temp",
-      "-n", pythonPathResolve(exeOutputFileName),
-      pythonPathResolve("python_source", sourcePyFileName)], { stdio: 'inherit' });
-  } else {
+  if (win) {
     const versionData = await buildPythonExeVersionData(fileDescription, author);
     fs.writeFileSync(path.resolve("temp", "versiondata.py"), versionData);
     cspawn.sync("pyinstaller", ["--noconfirm", "--onefile", "--console",
       "--distpath", pythonPathResolve("build"), "--specpath", "temp", "--workpath", "temp",
       "--version-file", pythonPathResolve("temp", "versiondata.py"),
       "--icon", pythonPathResolve(iconFileName),
+      "-n", pythonPathResolve(exeOutputFileName),
+      pythonPathResolve("python_source", sourcePyFileName)], { stdio: 'inherit' });
+  } else {
+    exeOutputFileName = path.parse(path.resolve(exeOutputFileName)).name;
+    cspawn.sync("pyinstaller", ["--noconfirm", "--onefile",
+      "--distpath", pythonPathResolve("build"), "--specpath", "temp", "--workpath", "temp",
       "-n", pythonPathResolve(exeOutputFileName),
       pythonPathResolve("python_source", sourcePyFileName)], { stdio: 'inherit' });
   }
