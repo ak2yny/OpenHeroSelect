@@ -57,13 +57,16 @@ jobs:
         include:
           - os: windows-latest
             architecture: x86
-            is-linux: false
+            platform: ""
           - os: windows-latest
             architecture: x64
-            is-linux: false
+            platform: ""
           - os: ubuntu-latest
             architecture: x64
-            is-linux: true
+            platform: linux
+          - os: macos-latest
+            architecture: x64
+            platform: mac
 
     permissions:
       contents: write
@@ -75,13 +78,13 @@ jobs:
       uses: actions/checkout@v4.1.1
 
     - name: Set up NASM
-      if: ${{ matrix.architecture == 'x86' && ! matrix.is-linux }}
+      if: ${{ matrix.architecture == 'x86' && matrix.platform == '' }}
       uses: ilammy/setup-nasm@v1.5.1
     - name: Setup scoop
-      if: ${{ matrix.architecture == 'x86' && ! matrix.is-linux }}
+      if: ${{ matrix.architecture == 'x86' && matrix.platform == '' }}
       uses: MinoruSekine/setup-scoop@v3
     - name: Install patch
-      if: ${{ matrix.architecture == 'x86' && ! matrix.is-linux }}
+      if: ${{ matrix.architecture == 'x86' && matrix.platform == '' }}
       run: scoop install patch
 
     - name: Setup Node.js
@@ -98,12 +101,8 @@ jobs:
     - name: Install pip modules
       run: npm run pipsetup
 
-    - name: Build release artifact ${{ matrix.architecture }}
-      if: ${{ ! matrix.is-linux }}
-      run: npm run distpackage-${{ matrix.architecture }}
-    - name: Build release artifact linux
-      if: ${{ matrix.is-linux }}
-      run: npm run distpackagelinux-${{ matrix.architecture }}
+    - name: Build release artifact ${{ matrix.platform }} ${{ matrix.architecture }}
+      run: npm run distpackage${{ matrix.platform }}-${{ matrix.architecture }}
 
     - name: Create release
       uses: softprops/action-gh-release@v2.0.4
