@@ -492,7 +492,7 @@ const main = async (automatic = false, xml2 = false) => {
 
   //read the available herostats from disk, sorted by extension priority
   const herostatFiles = fs.readdirSync(herostatPath, { recursive: true, withFileTypes: true })
-    .filter(f => f.isFile()).map(f => path.join(f.parentPath, f.name)).sort((a, b) => {
+    .filter(f => f.isFile()).map(f => path.join(f.path, f.name)).sort((a, b) => {
       const ai = EXTENSIONS.indexOf(path.extname(a).toLowerCase());
       const bi = EXTENSIONS.indexOf(path.extname(b).toLowerCase());
       return (ai === -1 && bi === -1) ? 0 : (ai === -1) ? 1 : (bi === -1) ? -1 : ai - bi;
