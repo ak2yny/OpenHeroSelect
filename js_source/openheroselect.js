@@ -11,7 +11,7 @@ const { XMLParser, XMLBuilder } = require("fast-xml-parser");
 const TXT_TO_JSON = require("./xml to json converter");
 
 // REGEXES
-const NEWLINE_REGEX = /\n+/m;
+const NEWLINE_REGEX = /(?:\s*\n\s*)+/m;
 const MENULOCATION_REGEX = /^((\s*"?|\s*<.*)menulocation[\s=":]{2,4}).+?(\s;\s*|".*|"?,)$/im;
 const STATS_REGEX = {
   TOJ: /^[^\S\n]*"?stats"?:?\s*{[\s\S]*}(?![\s\S]*})/im,
@@ -171,7 +171,6 @@ const main = async (automatic = false, xml2 = false) => {
     herostatFolder: "xml"
   });
 
-  let menulocationLimit = 0;
   let platform = null;
   let packageMod = false;
   let saveOptions = false;
@@ -193,6 +192,7 @@ const main = async (automatic = false, xml2 = false) => {
       readOptions = null;
     }
   }
+  let menulocationLimit = (options.rosterHack ? ROSTERHACK_HEROLIMIT : DEFAULT_HEROLIMIT) - 1;
 
   if (automatic) {
     //run in automatic mode, bypassing option prompts if available
@@ -445,10 +445,7 @@ const main = async (automatic = false, xml2 = false) => {
 
   //check if any characters are in the roster and complete if none
   const rosterData = fs.readFileSync(path.resolve(resourcePath, "rosters", `${options.rosterValue}.cfg`), "utf8");
-  const rosterRaw = rosterData
-    .split(NEWLINE_REGEX)
-    .filter((item) => item.trim().length)
-    .map((item) => item.trim());
+  const rosterRaw = rosterData.trim().split(NEWLINE_REGEX);
   if (rosterRaw.length < 1) {
     console.log("Roster is empty.");
     return;
@@ -459,17 +456,14 @@ const main = async (automatic = false, xml2 = false) => {
   let menulocations = [];
   if (!xml2) {
     const menulocationsData = fs.readFileSync(path.resolve(resourcePath, "menulocations", `${options.menulocationsValue}.cfg`), "utf8");
-    menulocations = menulocationsData
-      .split(NEWLINE_REGEX)
-      .filter((item) => item.trim().length)
-      .map((item) => parseInt(item.trim()));
+    menulocations = menulocationsData.trim().split(NEWLINE_REGEX)
+      .map((item) => parseInt(item.trimEnd()));
   } else {
     //workaround for herostat loop since xml2 doesn't use menulocations
     menulocations = new Array(options.rosterSize);
   }
 
-  const rosterList = rosterRaw
-    .slice(0, Math.min(rosterRaw.length, menulocations.length))
+  const rosterList = rosterRaw.slice(0, menulocations.length)
     .map((item) => item.replaceAll("*", "").replaceAll("?", ""));
 
   const operations = rosterList.length * 2 + 6;
